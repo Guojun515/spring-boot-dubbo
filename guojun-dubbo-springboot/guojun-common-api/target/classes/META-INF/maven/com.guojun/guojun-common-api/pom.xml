@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.guojun</groupId>
+		<artifactId>guojun-dubbo-springboot</artifactId>
+		<version>0.0.1</version>
+	</parent>
+
+	<artifactId>guojun-common-api</artifactId>
+	<version>${common-api-version}</version>
+	<name>guojun-common-api</name>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<!-- 所有的实体类 -->
+		<dependency>
+			<groupId>com.guojun</groupId>
+			<artifactId>guojun-common-domain</artifactId>
+			<version>${common-domain-version}</version>
+		</dependency>
+
+		<!-- 分页插件pagehelper -->
+		<dependency>
+			<groupId>com.github.pagehelper</groupId>
+			<artifactId>pagehelper</artifactId>
+		</dependency>
+	</dependencies>
+</project>

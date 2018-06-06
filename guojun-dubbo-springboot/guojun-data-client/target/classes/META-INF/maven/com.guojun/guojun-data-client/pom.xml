@@ -1,0 +1,83 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.guojun</groupId>
+		<artifactId>guojun-dubbo-springboot</artifactId>
+		<version>0.0.1</version>
+	</parent>
+
+	<artifactId>guojun-data-client</artifactId>
+	<version>0.0.1-CLIENT-SNAPSHOT</version>
+	<name>guojun-data-client</name>
+	<packaging>jar</packaging>
+
+	<dependencies>
+		<!-- 工具类 -->
+		<dependency>
+			<groupId>com.guojun</groupId>
+			<artifactId>guojun-common-tools</artifactId>
+			<version>${coommon-tools-version}</version>
+		</dependency>
+
+		<!-- 接口类，对consummer提供的接口类 -->
+		<dependency>
+			<groupId>com.guojun</groupId>
+			<artifactId>guojun-common-api</artifactId>
+			<version>${common-api-version}</version>
+		</dependency>
+
+		<!-- dubbo -->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>dubbo</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<!-- zookeeper-client -->
+		<dependency>
+			<groupId>org.apache.curator</groupId>
+			<artifactId>curator-recipes</artifactId>
+		</dependency>
+
+		<!-- spring boot -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
+		<!-- spring security -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- springboot打包插件 -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<mainClass>org.guojun.data.client.App</mainClass>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+</project>
