@@ -104,7 +104,6 @@
 	}
 
 ## 二、dubbo+springboot实现consumer
-## 二、dubbo+springboot实现consumer
 ### 在springboot中采用纯java config配置的方式
 * spring boot的配置文件是在src/main/resources的application.properties，可配置springboot相关的参数
 >
