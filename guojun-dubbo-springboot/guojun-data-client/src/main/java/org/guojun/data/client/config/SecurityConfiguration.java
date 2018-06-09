@@ -1,9 +1,5 @@
 package org.guojun.data.client.config;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.guojun.data.client.security.CsrfSecurityRequestMatcher;
 import org.guojun.data.client.security.LoginAuthenticationFailureHandler;
 import org.guojun.data.client.security.LoginAuthenticationSuccesssHandler;
 import org.guojun.data.client.security.MyAccessDecisionManager;
@@ -50,8 +46,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http
 			//CSRF拦截
 			.csrf()
+				//排除某些URL不进行csrf拦截
+				.ignoringAntMatchers("/user/doLogin","/user/logout")
 				.disable()
-				.requestMatcher(csrfSecurityRequest())
 			//异常处理
 			.exceptionHandling()
 				.accessDeniedHandler(accessDeniedHandler())
@@ -152,21 +149,5 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		myFilterSecurityInterceptor.setAccessDecisionManager(accessDecisionManager());
 		
 		return myFilterSecurityInterceptor;
-	}
-
-	/**
-	 * 排除某系URL不进行csrf拦截
-	 * @return
-	 */
-	@Bean
-	public CsrfSecurityRequestMatcher csrfSecurityRequest() {
-		CsrfSecurityRequestMatcher csrfSecurityRequestMatcher = new CsrfSecurityRequestMatcher();
-		
-		List<String> excludeURls = new ArrayList<>();
-		excludeURls.add("/user/doLogin");
-		excludeURls.add("/user/logout");
-		csrfSecurityRequestMatcher.setExcludeURls(excludeURls);
-		
-		return csrfSecurityRequestMatcher;
 	}
 }

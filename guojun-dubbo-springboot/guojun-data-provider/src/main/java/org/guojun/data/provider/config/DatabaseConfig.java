@@ -11,7 +11,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +24,7 @@ import com.alibaba.druid.pool.DruidDataSource;
 import com.github.pagehelper.PageInterceptor;
 
 import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.spring.mapper.MapperScannerConfigurer;
 
 /**
  * @EnableTransactionManagement 相当于<tx:annotation-driven />
@@ -143,6 +143,8 @@ public class DatabaseConfig {
 	@Bean
 	public MapperScannerConfigurer mapperScannerConfigurer() {
 		MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
+		mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactory");
+		mapperScannerConfigurer.setSqlSessionTemplateBeanName("sqlSession");
 		mapperScannerConfigurer.setBasePackage("org.guojun.data.provider.application.mapper");
 		mapperScannerConfigurer.setMarkerInterface(Mapper.class);
 		
