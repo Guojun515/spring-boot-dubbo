@@ -21,10 +21,14 @@ public class RedisLock {
 
     private final Logger log = LoggerFactory.getLogger(RedisLock.class);
 
+    /**
+     * redis template
+     */
     private RedisTemplate<String, String> redisTemplate;
 
-
-
+    /**
+     * lock datas
+     */
     private List<RedisLock> redisLockList;
 
     /**
@@ -32,18 +36,31 @@ public class RedisLock {
      */
     private String lockKey;
 
+    /**
+     * lock time out default 1 minute (unit:seconds)
+     */
+    private long lockTimeout = 60;
 
-    private int lockTimeout=10*1000;
-
+    /**
+     * lock status，default false
+     */
     private volatile boolean locked = false;
 
+    /**
+     * 锁住一个数据，过期时间为默认
+     * @param redisTemplate
+     * @param lockKey (unit:seconds)
+     */
     public RedisLock(RedisTemplate<String, String> redisTemplate, String lockKey) {
         this.redisTemplate = redisTemplate;
         this.lockKey = lockKey;
     }
 
     /**
-     * Detailed constructor.
+     * 锁住一个数据
+     * @param redisTemplate
+     * @param lockKey
+     * @param lockTimeout (unit:seconds)
      */
     public RedisLock(RedisTemplate<String, String> redisTemplate, String lockKey, int lockTimeout) {
         this(redisTemplate, lockKey);
@@ -51,7 +68,7 @@ public class RedisLock {
     }
 
     /**
-     * 锁一批数据,多个key
+     * 锁一批数据,多个key，过期时间为默认
      *
      * @param redisTemplate
      * @param lockKeyList   key的集合
@@ -66,7 +83,12 @@ public class RedisLock {
         }
     }
 
-
+    /**
+     * 锁一批数据,多个key
+     * @param redisTemplate
+     * @param lockKeyList
+     * @param lockTimeout (unit:seconds)
+     */
     public RedisLock(RedisTemplate<String, String> redisTemplate, List<String> lockKeyList, int lockTimeout) {
         //集合去重,否则如果出现重复数据后面的数据获取不到锁的情况
         lockKeyList = lockKeyList.stream().distinct().collect(Collectors.toList());
@@ -79,7 +101,11 @@ public class RedisLock {
         }
     }
 
-
+    /**
+     * 从redis获取数据
+     * @param key
+     * @return
+     */
     private String get(final String key) {
         Object obj = null;
         try {
@@ -98,6 +124,12 @@ public class RedisLock {
         return obj != null ? obj.toString() : null;
     }
 
+    /**
+     * 从set获取数据
+     * @param key
+     * @param value
+     * @return
+     */
     private String getSet(final String key, final String value) {
         Object obj = null;
         try {
@@ -116,6 +148,11 @@ public class RedisLock {
         return obj != null ? obj.toString() : null;
     }
 
+    /**
+     * 删除
+     * @param lockKey
+     * @return
+     */
     private boolean del(final String lockKey) {
         try {
             redisTemplate.execute(new RedisCallback<Object>() {
@@ -134,7 +171,13 @@ public class RedisLock {
         return false;
     }
 
-    private boolean expire(final String lockKey, final Integer expireTime) {
+    /**
+     * 设置过期时间
+     * @param lockKey
+     * @param expireTime
+     * @return
+     */
+    private boolean expire(final String lockKey, final Long expireTime) {
         Object obj = null;
         try {
             obj =  redisTemplate.execute(new RedisCallback<Boolean>() {
@@ -153,7 +196,12 @@ public class RedisLock {
         return false;
     }
 
-
+    /**
+     * reids没有值则赋值进去
+     * @param key
+     * @param value
+     * @return
+     */
     private boolean setNX(final String key, final String value) {
         Object obj = null;
         try {
@@ -179,12 +227,11 @@ public class RedisLock {
      */
     public synchronized boolean lock() {
         //锁时间
-        Long lock_timeout = currtTimeForRedis() + lockTimeout  + 1;
+        Long lock_timeout = currtTimeForRedis() + lockTimeout * 1000  + 1;
 
-
-        if (setNX(lockKey, String.valueOf(lock_timeout))) {
+        if (this.setNX(lockKey, String.valueOf(lock_timeout))) {
             //设置超时时间，释放内存
-            expire(lockKey, lockTimeout);
+            this.expire(lockKey, lockTimeout);
             locked=true;
             return locked;
         } else {
@@ -199,7 +246,7 @@ public class RedisLock {
                 if (old_lock_timeout_Str != null && old_lock_timeout_Str.equals(currt_lock_timeout_str)) {
                     //多线程运行时，多个线程签好都到了这里，但只有一个线程的设置值和当前值相同，它才有权利获取锁
                     //设置超时间，释放内存
-                    expire(lockKey, lockTimeout);
+                    this.expire(lockKey, lockTimeout);
                     //返回加锁时间
                     locked=true;
                     return locked;
@@ -208,6 +255,7 @@ public class RedisLock {
         }
         return false;
     }
+    
     /**
      * 解锁
      *
@@ -217,7 +265,7 @@ public class RedisLock {
         String result = get(lockKey);
         Long currt_lock_timeout_str = result == null ? null : Long.valueOf(result);
         if (currt_lock_timeout_str != null) {
-            del(lockKey);
+            this.del(lockKey);
             locked=false;
         }
     }
@@ -266,8 +314,6 @@ public class RedisLock {
         }
         return true;
     }
-
-
 
     /**
      * 解锁list
