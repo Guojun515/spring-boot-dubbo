@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class ConsumerInitServiceImpl implements ISpringInitService, InitializingBean {
 
 	@Autowired
-	ThreadPoolTaskExecutor taskExecutor;
+	private ThreadPoolTaskExecutor taskExecutor;
 	
 	@Override
 	public void afterPropertiesSet() throws Exception {

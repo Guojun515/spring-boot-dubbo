@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 public class CacheInitServiceImpl implements ISpringInitService, InitializingBean {
 	
 	@Autowired
-	ThreadPoolTaskExecutor taskExecutor;
+	private ThreadPoolTaskExecutor taskExecutor;
 	
 	
 	@Override

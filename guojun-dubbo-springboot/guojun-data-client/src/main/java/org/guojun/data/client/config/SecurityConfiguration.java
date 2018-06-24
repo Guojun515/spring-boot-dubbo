@@ -55,7 +55,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		.and()
 			//登录配置
 			.formLogin()
-				.loginPage("/user/gotoLogin")
+				.loginPage("/sys/gotoLogin")
 				.loginProcessingUrl("/user/doLogin")
 				.failureHandler(loginAuthenticationFailureHandler())
 				.successHandler(loginAuthenticationSuccesssHandler())
@@ -63,7 +63,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			//退出配置
 			.logout()
 				.logoutUrl("/user/logout")
-				.logoutSuccessUrl("/user/gotoLogin")
+				.logoutSuccessUrl("/sys/gotoLoginout")
 		.and()
 			//自定义拦截器
 			.addFilterAfter(myFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
